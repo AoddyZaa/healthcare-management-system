@@ -18,12 +18,8 @@ def run_vitals_app():
 
     def get_gcp_client():
         try:
-            # รองรับทั้งรันบน Streamlit Cloud (ดึงจาก Secrets) และรันบนเครื่อง (อ่านไฟล์ .json)
-            if "gcp_service_account" in st.secrets:
-                creds_dict = dict(st.secrets["gcp_service_account"])
-                credentials = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
-            else:
-                credentials = Credentials.from_service_account_file("appointment2026-3298e4cbba4f.json", scopes=SCOPES)
+            # อ่านจากไฟล์ JSON ในโปรเจกต์ตรงๆ ได้เลย ไม่ต้องผ่าน Secrets ให้ปวดหัว
+            credentials = Credentials.from_service_account_file("appointment2026-3298e4cbba4f.json", scopes=SCOPES)
             return gspread.authorize(credentials)
         except Exception as e:
             st.error(f"❌ Error: {e}")
