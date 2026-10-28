@@ -18,9 +18,14 @@ def run_vitals_app():
 
     def get_gcp_client():
         try:
-            # อ่านจากไฟล์ JSON ในโปรเจกต์ตรงๆ ได้เลย ไม่ต้องผ่าน Secrets ให้ปวดหัว
-            credentials = Credentials.from_service_account_file("appointment2026-3298e4cbba4f.json", scopes=SCOPES)
-            return gspread.authorize(credentials)
+            # ดึงข้อมูลจาก st.secrets โดยตรง เพื่อรองรับ Streamlit Cloud อย่างปลอดภัย
+            if "gcp_service_account" in st.secrets:
+                secrets_dict = dict(st.secrets["gcp_service_account"])
+                credentials = Credentials.from_service_account_info(secrets_dict, scopes=SCOPES)
+                return gspread.authorize(credentials)
+            else:
+                st.error("❌ ไม่พบข้อมูล gcp_service_account ใน Streamlit Secrets")
+                return None
         except Exception as e:
             st.error(f"❌ Error: {e}")
             return None
