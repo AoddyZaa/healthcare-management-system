@@ -223,7 +223,7 @@ def run_labs_app():
 
     df = get_data()
 
-    # --- ส่วนกราฟแสดงผลแนวโน้ม (Plotly Chart) ---
+    # --- ส่วนกราฟแสดงผลแนวโน้ม (Plotly Chart) และตารางข้อมูล ---
     if not df.empty:
         st.markdown("---")
         st.subheader("📈 กราฟแสดงแนวโน้มผลตรวจสุขภาพตามกาลเวลา")
@@ -252,6 +252,9 @@ def run_labs_app():
                     fig.update_traces(line=dict(color="#2563eb", width=3), marker=dict(size=8, color="#1d4ed8"))
                     fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
                     st.plotly_chart(fig, use_container_width=True)
+                    
+                    # --- เพิ่มตารางแสดงข้อมูลตัวเลขใต้กราฟเหมือนต้นแบบ ---
+                    st.dataframe(numeric_chart_df[["วันที่ตรวจ", "ค่าตัวเลข"]], use_container_width=True)
                 else:
                     st.info("ℹ️ รายการนี้เก็บผลลัพธ์เป็นข้อความ จึงไม่แสดงกราฟเส้นตัวเลขครับ")
         else:
