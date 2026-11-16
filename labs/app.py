@@ -152,17 +152,23 @@ def run_labs_app():
         }
     }
 
-    # --- CSS บังคับสีตัวหนังสือให้เป็นสีดำ/เข้มชัดเจน และปรับแต่งการแสดงผล ---
+    # --- CSS บังคับสีพื้นหลังเป็นขาว และสีตัวหนังสือทั้งหมดเป็นสีดำเข้มคมชัด (แก้ปัญหาจอมืด/ตัวหนังสือจางบนมือถือ) ---
     st.markdown(
         """
         <style>
-        /* บังคับสีข้อความ หัวข้อ และป้ายชื่อทั้งหมดให้เป็นสีดำเข้มคมชัด */
-        h1, h2, h3, h4, h5, h6, span, p, label, .stMarkdown, div[data-testid="stMarkdownContainer"] {
+        /* บังคับพื้นหลังแอปและคอนเทนต์เป็นสีขาว */
+        .stApp, .main, div[data-testid="stAppViewContainer"] {
+            background-color: #ffffff !important;
+        }
+        /* บังคับสีข้อความ หัวข้อ ป้ายกำกับทั้งหมดให้เป็นสีดำเข้มชัดเจน */
+        h1, h2, h3, h4, h5, h6, span, p, label, div, .stMarkdown, div[data-testid="stMarkdownContainer"], .streamlit-expanderHeader {
             color: #111827 !important;
         }
-        .stTextInput input, .stSelectbox select {
+        /* บังคับสีข้อความและขนาดในกล่องข้อความและ Dropdown */
+        .stTextInput input, .stSelectbox select, .stDateInput input, .stTimeInput input {
             font-size: 16px !important;
             color: #111827 !important;
+            background-color: #f9fafb !important;
         }
         section[data-testid="stSidebar"] .stTextInput input {
             font-size: 16px !important;
