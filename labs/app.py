@@ -152,14 +152,21 @@ def run_labs_app():
         }
     }
 
+    # --- CSS บังคับสีตัวหนังสือให้เป็นสีดำ/เข้มชัดเจน และปรับแต่งการแสดงผล ---
     st.markdown(
         """
         <style>
+        /* บังคับสีข้อความ หัวข้อ และป้ายชื่อทั้งหมดให้เป็นสีดำเข้มคมชัด */
+        h1, h2, h3, h4, h5, h6, span, p, label, .stMarkdown, div[data-testid="stMarkdownContainer"] {
+            color: #111827 !important;
+        }
         .stTextInput input, .stSelectbox select {
             font-size: 16px !important;
+            color: #111827 !important;
         }
         section[data-testid="stSidebar"] .stTextInput input {
             font-size: 16px !important;
+            color: #111827 !important;
         }
         div[data-testid="stHorizontalBlock"], div[data-testid="column"] {
             width: 100% !important;
