@@ -13,7 +13,6 @@ def run_labs_app():
 
     def get_gcp_client():
         try:
-            # ดึงข้อมูลจาก st.secrets โดยตรง เพื่อรองรับ Streamlit Cloud อย่างปลอดภัย
             if "gcp_service_account" in st.secrets:
                 secrets_dict = dict(st.secrets["gcp_service_account"])
                 credentials = Credentials.from_service_account_info(secrets_dict, scopes=SCOPES)
@@ -90,7 +89,6 @@ def run_labs_app():
             st.error(f"Error saving: {e}")
             return False
 
-    # ฐานข้อมูล 7 หมวดหมู่หลักแบบดั้งเดิม
     test_database = {
         "1. การทำงานของไต (Kidney Function)": {
             "Blood Urea Nitrogen (BUN)": {"unit": "mg/dL", "min": 6.0, "max": 20.0},
@@ -154,7 +152,28 @@ def run_labs_app():
         }
     }
 
-    # --- ส่วนรับข้อมูลด้านซ้าย (Sidebar) วางไว้บนสุดเพื่อให้แสดงผลเต็มแถบซ้ายสวยงาม ---
+    st.markdown(
+        """
+        <style>
+        .stTextInput input, .stSelectbox select {
+            font-size: 16px !important;
+        }
+        section[data-testid="stSidebar"] .stTextInput input {
+            font-size: 16px !important;
+        }
+        div[data-testid="stHorizontalBlock"], div[data-testid="column"] {
+            width: 100% !important;
+        }
+        div.stButton > button {
+            width: 100%;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
     st.sidebar.header("📝 โหมดบันทึกผลตรวจยกชุด (รายหมวด)")
     check_date = st.sidebar.date_input("📅 วันที่ตรวจ", datetime.now())
     check_time = st.sidebar.time_input("⏰ เวลาตรวจ")
@@ -217,13 +236,11 @@ def run_labs_app():
         else:
             st.sidebar.warning("⚠️ กรุณากรอกค่าผลตรวจอย่างน้อย 1 รายการ")
 
-    # --- ส่วนแสดงผลหน้าหลัก (Main Panel) ด้านขวา ---
     st.title("🩺 ระบบบันทึกและวิเคราะห์ผลตรวจสุขภาพ (Medical Lab Tracker)")
     st.markdown("เชื่อมต่อ Google Sheets กลาง: **Healthcare_Master_DB** (Tab: `labs`)")
 
     df = get_data()
 
-    # --- ส่วนกราฟแสดงผลแนวโน้ม (Plotly Chart) และตารางข้อมูล ---
     if not df.empty:
         st.markdown("---")
         st.subheader("📈 กราฟแสดงแนวโน้มผลตรวจสุขภาพตามกาลเวลา")
@@ -253,14 +270,12 @@ def run_labs_app():
                     fig.update_layout(plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)")
                     st.plotly_chart(fig, use_container_width=True)
                     
-                    # --- เพิ่มตารางแสดงข้อมูลตัวเลขใต้กราฟเหมือนต้นแบบ ---
                     st.dataframe(numeric_chart_df[["วันที่ตรวจ", "ค่าตัวเลข"]], use_container_width=True)
                 else:
                     st.info("ℹ️ รายการนี้เก็บผลลัพธ์เป็นข้อความ จึงไม่แสดงกราฟเส้นตัวเลขครับ")
         else:
             st.info("💡 ยังไม่มีข้อมูลผลตรวจสำหรับแสดงกราฟแนวโน้ม")
 
-    # --- ส่วนตารางข้อมูลย้อนหลัง ---
     st.markdown("---")
     st.subheader("📋 ประวัติการตรวจสุขภาพย้อนหลัง (แก้ไข/ลบได้)")
     edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True, key="lab_ed_mod")
@@ -269,3 +284,6 @@ def run_labs_app():
         if save_data(edited_df[columns_order]):
             st.success("อัปเดตข้อมูลลง Google Sheets สำเร็จ!")
             st.rerun()
+
+if __name__ == "__main__":
+    run_labs_app()
